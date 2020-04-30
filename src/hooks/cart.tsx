@@ -30,7 +30,9 @@ const CartProvider: React.FC = ({ children }) => {
 
   useEffect(() => {
     async function loadProducts(): Promise<void> {
-      const getProductsInCart = await AsyncStorage.getItem('@GoMarketplace');
+      const getProductsInCart = await AsyncStorage.getItem(
+        '@cart/GoMarketplace',
+      );
       if (getProductsInCart) {
         setProducts(JSON.parse(getProductsInCart));
       } else {
@@ -66,7 +68,10 @@ const CartProvider: React.FC = ({ children }) => {
       }
 
       setProducts(state);
-      await AsyncStorage.setItem('@GoMarketplace', JSON.stringify(products));
+      await AsyncStorage.setItem(
+        '@cart/GoMarketplace',
+        JSON.stringify(products),
+      );
     },
     [products],
   );
@@ -84,7 +89,10 @@ const CartProvider: React.FC = ({ children }) => {
       });
 
       setProducts(state);
-      await AsyncStorage.setItem('@GoMarketplace', JSON.stringify(products));
+      await AsyncStorage.setItem(
+        '@cart/GoMarketplace',
+        JSON.stringify(products),
+      );
     },
     [products],
   );
@@ -92,9 +100,7 @@ const CartProvider: React.FC = ({ children }) => {
   const decrement = useCallback(
     async id => {
       const product = products.find(prod => prod.id === id);
-
       let state: Product[] = [];
-
       if (product && product.quantity > 1) {
         state = products.map(prod => {
           if (prod.id === id) {
@@ -108,9 +114,11 @@ const CartProvider: React.FC = ({ children }) => {
       } else if (product && product.quantity === 1) {
         state = products.filter(prod => prod.id !== id);
       }
-
       setProducts(state);
-      await AsyncStorage.setItem('@GoMarketplace', JSON.stringify(products));
+      await AsyncStorage.setItem(
+        '@cart/GoMarketplace',
+        JSON.stringify(products),
+      );
     },
     [products],
   );
@@ -119,7 +127,6 @@ const CartProvider: React.FC = ({ children }) => {
     () => ({ addToCart, increment, decrement, products }),
     [products, addToCart, increment, decrement],
   );
-
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 };
 
